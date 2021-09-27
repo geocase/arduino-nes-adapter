@@ -16,8 +16,6 @@ int main() {
     serial_params.StopBits = ONESTOPBIT;
     serial_params.Parity = NOPARITY;
 
-   
-
     COMMTIMEOUTS timeout = {0};
     timeout.ReadIntervalTimeout = 1;
     timeout.ReadTotalTimeoutConstant = 1;
@@ -29,7 +27,7 @@ int main() {
     LPTSTR buffer;
     DWORD cchBufferLength;
     OVERLAPPED ol = {0};
-    
+
     FlushFileBuffers(serial_handle);
     PurgeComm(serial_handle, PURGE_TXABORT | PURGE_RXABORT | PURGE_TXCLEAR | PURGE_RXCLEAR);
 
