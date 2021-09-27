@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <Windows.h>
+#include <winuser.h>
 #include <inttypes.h>
 #include <stdbool.h>
 
@@ -34,6 +35,17 @@ int main() {
     uint8_t k = 0;
 
     uint8_t bits[] = {1, 2, 4, 8, 16, 32, 64, 128};
+    // h, j, u, i, w, s, a, d
+    WORD keys[] = {0x48, 0x4a, 0x55, 0x49, 0x57, 0x53, 0x41, 0x44};
+    bool key_pressed[] = {false, false, false, false, false, false, false, false};
+
+    INPUT out = {0};
+    out.type = INPUT_KEYBOARD;
+    out.ki.wVk = 49;
+    out.ki.wScan = 0;
+    out.ki.time = 0;
+    out.ki.dwExtraInfo = 0;
+    out.ki.dwFlags = 0;
 
     while(1) {
         if(ReadFile(serial_handle, buff, 1, &read, &ol) != 0) {
@@ -41,6 +53,16 @@ int main() {
             printf("%d:", i);
             for(int l = 0; l < 8; ++l) {
                 bool val = (k & bits[l]) != 0;
+                out.ki.wScan = MapVirtualKey(keys[l], 0);
+                if(val && (!key_pressed[l])) {
+                    out.ki.dwFlags = KEYEVENTF_SCANCODE;
+                    SendInput(1, &out, sizeof(INPUT));
+                    key_pressed[l] = true;
+                } else if(!val && key_pressed[l]) {
+                    out.ki.dwFlags = KEYEVENTF_KEYUP | KEYEVENTF_SCANCODE;
+                    SendInput(1, &out, sizeof(INPUT));
+                    key_pressed[l] = false;
+                }
                 printf("%d\t", val);                    
             }
             printf("\n");
