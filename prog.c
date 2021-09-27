@@ -50,7 +50,7 @@ int main() {
     while(1) {
         if(ReadFile(serial_handle, buff, 1, &read, &ol) != 0) {
             k = (uint8_t)(*buff);
-            printf("%d:", i);
+            printf("%d:\t", i);
             for(int l = 0; l < 8; ++l) {
                 bool val = (k & bits[l]) != 0;
                 out.ki.wScan = MapVirtualKey(keys[l], 0);
@@ -65,7 +65,7 @@ int main() {
                 }
                 printf("%d\t", val);                    
             }
-            printf("\n");
+            printf("\r");
 
         } else {
             printf("%ld\n", GetLastError());
